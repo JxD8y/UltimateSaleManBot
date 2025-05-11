@@ -7,6 +7,8 @@ Repo : Repository.USMRepo = None
 STATE = "admin_item_managment"
 
 async def MessageDispatcher(update:Update,context:ContextTypes.DEFAULT_TYPE):
+    if update.effective_chat.id not in Repo.Admins:
+        return
     section = context.user_data["current_state"]
     m : re.Match = re.match(".*\\$(.*)\\$.*",section)
     if m is not None:
@@ -17,6 +19,8 @@ async def MessageDispatcher(update:Update,context:ContextTypes.DEFAULT_TYPE):
             await EditItemCallback(update,context)
 
 async def CallbackDispatcher(update:Update,context:CallbackContext):
+    if update.effective_chat.id not in Repo.Admins:
+        return
     section = update.callback_query.data
     m : re.Match = re.match(".*\\$([a-z A-Z 0-9]*)_?",section)
     if m is not None:

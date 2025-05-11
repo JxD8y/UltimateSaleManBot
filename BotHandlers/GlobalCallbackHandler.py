@@ -2,6 +2,7 @@ from telegram import InlineKeyboardButton,InlineKeyboardMarkup ,ReplyKeyboardMar
 from telegram.ext import Application,filters,CommandHandler,MessageHandler,CallbackQueryHandler,CallbackContext,ConversationHandler
 import Repository
 from BotHandlers.Admin import ItemManagment
+from BotHandlers.Admin import UserManagment
 import re
 
 Repo = Repository.USMRepository
@@ -15,4 +16,6 @@ async def GlobalCallbackHandler(update:Update,context:CallbackContext):
 
             if(sec == ItemManagment.STATE):
                 await ItemManagment.CallbackDispatcher(update,context)
+            elif(sec == UserManagment.STATE):
+                await UserManagment.CallbackDispatcher(update,context)
 

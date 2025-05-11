@@ -31,7 +31,7 @@ class USMRepo:
         self._DbCursor.execute("CREATE TABLE IF NOT EXISTS users "
         "(number_id int not null primary key,"
         "name text not null," \
-        "charge real not null default 0," \
+        "is_active integer not null default 1," \
         "start_time TEXT not null);")
 
         self._DbCursor.execute("CREATE TABLE IF NOT EXISTS items "
@@ -62,7 +62,7 @@ class USMRepo:
     
     def AppendAdmin(self,number_id,name):
         self._DbCursor.execute("SELECT number_id from admins")
-        self.Admins = self._DbCursor.fetchall()
+        self.Admins = [i[0] for i in self._DbCursor.fetchall()]
         if(number_id not in self.Admins):
             self._DbCursor.execute("INSERT INTO admins values (?,?)",(number_id,name))
             self._DbConnection.commit()
@@ -72,20 +72,24 @@ class USMRepo:
 
     def RemoveAdmin(self,number_id,name):
         self._DbCursor.execute("SELECT number_id from admins")
-        self.Admins = self._DbCursor.fetchall()
+        self.Admins = [i[0] for i in self._DbCursor.fetchall()]
         if(number_id in self.Admins):
             self._DbCursor.execute(f"DELETE FROM admins WHERE number_id = {number_id}")
             self._DbConnection.commit()
             self.Admins.remove(number_id)
         else:
-            print(f"admin {name} already exist in database")
+            print(f"admin {name} {number_id} doesn't exist in database")
     
     def GetUser(self,number_id):
         self._DbCursor.execute(f"SELECT * from users where number_id = {number_id}")
         return self._DbCursor.fetchone()
     
+    def GetAdmin(self,number_id):
+        self._DbCursor.execute("SELECT * FROM admins WHERE number_id = ?",(number_id,))
+        return self._DbCursor.fetchone()
+
     def AddUser(self,number_id,name,start_time):
-        self._DbCursor.execute(f"INSERT INTO users values (?,?,?,?)",(number_id,name,0,start_time))
+        self._DbCursor.execute(f"INSERT INTO users values (?,?,?,?)",(number_id,name,1,start_time))
         self._DbConnection.commit()
 
     def GetUserAmount(self,number_id):
@@ -93,6 +97,20 @@ class USMRepo:
         charge = self._DbCursor.fetchone()
         return float(charge)
     
+    def GetUsers(self):
+        self._DbCursor.execute("SELECT * FROM users")
+        return self._DbCursor.fetchall()
+    
+    def SetUserActiveState(self,number_id,active:bool):
+        if active:
+            self._DbCursor.execute("UPDATE users set is_active = 1 where number_id = ?",(number_id,))
+        else:
+            self._DbCursor.execute("UPDATE users set is_active = 0 where number_id = ?",(number_id,))
+
+    def DeleteUser(self,number_id):
+        self._DbCursor.execute("DELETE FROM users where number_id = ?",(number_id,))
+        self._DbConnection.commit()
+
     def GetItems(self):
         self._DbCursor.execute("SELECT * from items")
         return self._DbCursor.fetchall()
