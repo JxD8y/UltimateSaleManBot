@@ -42,6 +42,7 @@ async def ViewItemsMessage(update:Update,context:ContextTypes.DEFAULT_TYPE):
         await update.effective_chat.send_message("🛒 Items available in database: ")
 
 async def AddItemCallback(update:Update,context:ContextTypes.DEFAULT_TYPE):
+    #!! CONTROL FLOW OF THIS FUNCTION IS NOT LINEAR !!
     if context.user_data["current_state"] == f"{STATE}$AddItem$Name" and update.message is not None:
         context.user_data["item_name"] = update.message.text
         context.user_data["current_state"] = f"{STATE}$AddItem$Price"
@@ -60,7 +61,9 @@ async def AddItemCallback(update:Update,context:ContextTypes.DEFAULT_TYPE):
         name = context.user_data["item_name"]
         price = float(context.user_data["item_price"])
         quantity = float(context.user_data["item_quantity"])
-        await update.effective_chat.send_message(f"🛒 So this is the item overall:\nName {name}\n\nPrice {price}\n\nQuantity {quantity}\n\nEstimated {price * quantity} worth of cash")
+        await update.effective_chat.send_message(f"🛒 So this is the item overall:\nℹ️Name {name}\n\n💰Price {price}\n\nℹ️Quantity {quantity}\n\nEstimated {price * quantity}$ worth of cash")
+        Repo.AddItem(name,price,quantity)
+        await update.effective_chat.send_message("✅Item added successfully")
     else:
         context.user_data["current_state"] = f"{STATE}$AddItem$Name"
         await update.callback_query.answer()
