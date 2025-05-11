@@ -35,7 +35,7 @@ class USMRepo:
         "start_time TEXT not null);")
 
         self._DbCursor.execute("CREATE TABLE IF NOT EXISTS items "
-        "(id integer not null primary key,"
+        "(id integer not null primary key AUTOINCREMENT,"
         "count int not null,"
         "item text not null," \
         "price real not null);")
@@ -96,6 +96,10 @@ class USMRepo:
     def GetItems(self):
         self._DbCursor.execute("SELECT * from items")
         return self._DbCursor.fetchall()
+    
+    def AddItem(self,name,price,quantity):
+        self._DbCursor.execute("INSERT INTO items (count,item,price) VALUES (?,?,?)",(quantity,name,price))
+        self._DbConnection.commit()
 
 USMRepository : USMRepo = None
 

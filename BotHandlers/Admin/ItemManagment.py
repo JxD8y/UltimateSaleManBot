@@ -24,6 +24,7 @@ async def CallbackDispatcher(update:Update,context:CallbackContext):
             await AddItemCallback(update,context)
         elif(sec == "abort"):
             await AbortCallback(update,context)
+        
 
 async def ViewItemsMessage(update:Update,context:ContextTypes.DEFAULT_TYPE):
     global Repo
@@ -39,7 +40,12 @@ async def ViewItemsMessage(update:Update,context:ContextTypes.DEFAULT_TYPE):
                InlineKeyboardButton("❌ Abort",callback_data=f"{STATE}$abort")]]
         await update.effective_chat.send_message("⚠️ No item available in inventory.",reply_markup=InlineKeyboardMarkup(kb))
     else:
-        await update.effective_chat.send_message("🛒 Items available in database: ")
+        kb = []
+        for item in items:
+            kb.append([InlineKeyboardButton(item[2],callback_data=f"{STATE}$itemview${item[0]}")])
+        kb.append([InlineKeyboardButton("➕ Add item",callback_data=f"{STATE}$add_item"),
+               InlineKeyboardButton("❌ Abort",callback_data=f"{STATE}$abort")])
+        await update.effective_chat.send_message("🛒 Items available in database: ",reply_markup=InlineKeyboardMarkup(kb))
 
 async def AddItemCallback(update:Update,context:ContextTypes.DEFAULT_TYPE):
     #!! CONTROL FLOW OF THIS FUNCTION IS NOT LINEAR !!
@@ -61,7 +67,7 @@ async def AddItemCallback(update:Update,context:ContextTypes.DEFAULT_TYPE):
         name = context.user_data["item_name"]
         price = float(context.user_data["item_price"])
         quantity = float(context.user_data["item_quantity"])
-        await update.effective_chat.send_message(f"🛒 So this is the item overall:\nℹ️Name {name}\n\n💰Price {price}\n\nℹ️Quantity {quantity}\n\nEstimated {price * quantity}$ worth of cash")
+        await update.effective_chat.send_message(f"🛒 So this is the item overall:\n\nℹ️Name {name}\n\n💰Price {price}\n\nℹ️Quantity {quantity}\n\nEstimated {price * quantity}$ worth of cash")
         Repo.AddItem(name,price,quantity)
         await update.effective_chat.send_message("✅Item added successfully")
     else:
