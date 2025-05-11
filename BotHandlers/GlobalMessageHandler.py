@@ -7,7 +7,7 @@ import re
 Repo = Repository.USMRepository
 
 async def GlobalMessageHandler(update:Update,context:CallbackContext):
-    if context.user_data["current_state"] is not None:
+    if "current_state" in context.user_data:
         section = context.user_data["current_state"]
         m : re.Match = re.match("([a-z,_]*)\\$",section)
         if m is not None:
