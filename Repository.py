@@ -100,6 +100,18 @@ class USMRepo:
     def AddItem(self,name,price,quantity):
         self._DbCursor.execute("INSERT INTO items (count,item,price) VALUES (?,?,?)",(quantity,name,price))
         self._DbConnection.commit()
+    
+    def GetItem(self,id):
+        self._DbCursor.execute("SELECT * FROM items WHERE id = ?",(id,))
+        return self._DbCursor.fetchone()
+    
+    def DeleteItem(self, id):
+        self._DbCursor.execute("DELETE FROM items WHERE id = ?",(id,))
+        self._DbConnection.commit()
+    
+    def UpdateItem(self,id,name,price,count):
+        self._DbCursor.execute(f"UPDATE items SET item = \"{name}\", count = \"{count}\" , price = \"{price}\" WHERE id = {id}")
+        self._DbConnection.commit()
 
 USMRepository : USMRepo = None
 
