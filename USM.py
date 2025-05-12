@@ -21,7 +21,7 @@ def init():
     Repository.SetRepo(Repo)
     print(Repository.GetRepo().Admins)
     if(len(Repo.Admins) == 0):
-        Repo.AppendAdmin(7896978882,"J's") #Hard coded admin
+        Repo.AppendAdmin(0,"admin") #Hard coded admin
 
     App = Application.builder().token(TOKEN).build()
     App.add_error_handler(BotHandlers.ErrorHandler.HandleUserErrorCallback)
