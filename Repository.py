@@ -1,4 +1,5 @@
 import sqlite3
+import datetime
 
 class USMRepo:
     _Path = ""
@@ -41,21 +42,11 @@ class USMRepo:
         "price real not null);")
 
         self._DbCursor.execute("CREATE TABLE IF NOT EXISTS orders "
-        "(id integer not null primary key,"
+        "(id integer not null primary key AUTOINCREMENT,"
         "time TEXT not null," \
         "uid integer not null,"
         "item_id integer not null," \
-        "payment_id integer not null,"
-        "foreign key (uid) references users(number_id)," \
-        "foreign key (item_id) references items(id));")
-
-        self._DbCursor.execute("CREATE TABLE IF NOT EXISTS payments "
-        "(id integer not null primary key,"
-        "method text not null," \
-        "amount real not null,"
-        "pay_time TEXT not null," \
-        "state boolean not null," \
-        "uid integer not null," \
+        "state integer not null default 0," #0: Not Processed 1: Accept 2: Deny
         "foreign key (uid) references users(number_id));")
 
         print("DATABASE TABLES INITIATED")
@@ -131,6 +122,19 @@ class USMRepo:
         self._DbCursor.execute(f"UPDATE items SET item = \"{name}\", count = \"{count}\" , price = \"{price}\" WHERE id = {id}")
         self._DbConnection.commit()
 
+    def CreateOrder(self,number_id,item_id):
+        date = str(datetime.datetime.now())
+        self._DbCursor.execute("INSERT INTO orders (time,uid,item_id) VALUES (?,?,?)",(date,number_id,item_id))
+        self._DbConnection.commit()
+        return self._DbCursor.lastrowid
+    
+    def GetOrder(self,order_id):
+        self._DbCursor.execute("SELECT * FROM orders where id = ?",(order_id,))
+        return self._DbCursor.fetchone()
+
+    def SetOrderState(self,order_id,order_state):#0: Not Processed 1: Accept 2: Deny
+        self._DbCursor.execute(f"UPDATE orders set state = {order_state} where id = {order_id}")
+        self._DbConnection.commit()
 USMRepository : USMRepo = None
 
 def SetRepo(URepo:USMRepo):

@@ -3,11 +3,14 @@ from telegram.ext import Application,filters,CommandHandler,MessageHandler,Callb
 import Repository
 from BotHandlers.Admin import ItemManagment
 from BotHandlers.Admin import UserManagment
+from BotHandlers.Admin import UserOrderAck
+from BotHandlers.User import HandleOrder
 import re
 
 Repo = Repository.USMRepository
 
 async def GlobalCallbackHandler(update:Update,context:CallbackContext):
+    
     if update.callback_query is not None:
         section = update.callback_query.data
         m : re.Match = re.match("([a-z,_]*)\\$",section)
@@ -18,4 +21,7 @@ async def GlobalCallbackHandler(update:Update,context:CallbackContext):
                 await ItemManagment.CallbackDispatcher(update,context)
             elif(sec == UserManagment.STATE):
                 await UserManagment.CallbackDispatcher(update,context)
-
+            elif(sec == HandleOrder.STATE):
+                await HandleOrder.CallbackDispatcher(update,context)
+            elif(sec == UserOrderAck.STATE):
+                await UserOrderAck.CallbackDispatcher(update,context)
