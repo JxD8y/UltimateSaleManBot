@@ -14,11 +14,7 @@ import Repository
 
 Repo : Repository.USMRepo = None
 App : Application = None
-TOKEN = "7283654416:AAF9o3BfG-VZSEwID2NOyALO-KBatjaWHYg"
-
-
-#Two user possible conv : View History , Order 
-#Three Admin possible conv: see user info , ack payment (Starts when user initiate a transfer!) , manage items
+TOKEN = ""
 
 def init():
     Repo = Repository.USMRepo("ultimate.db")
