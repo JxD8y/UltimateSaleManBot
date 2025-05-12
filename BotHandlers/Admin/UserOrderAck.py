@@ -65,7 +65,7 @@ async def DenyOrderCallback(update:Update,context:ContextTypes.DEFAULT_TYPE):
     
     order_id = int(m.groups()[0])
     order = Repo.GetOrder(order_id)
-    Repo.SetOrderState(order_id,1)
+    Repo.SetOrderState(order_id,2)
     await update.effective_chat.send_message("❌ Order denied")
     number_id = order[2]
     chat = await context.bot.get_chat(number_id)
