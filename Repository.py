@@ -135,6 +135,10 @@ class USMRepo:
     def SetOrderState(self,order_id,order_state):#0: Not Processed 1: Accept 2: Deny
         self._DbCursor.execute(f"UPDATE orders set state = {order_state} where id = {order_id}")
         self._DbConnection.commit()
+    
+    def GetOrders(self,number_id):
+        self._DbCursor.execute(f"SELECT * FROM orders where uid = ?",(number_id,))
+        return self._DbCursor.fetchall()
 USMRepository : USMRepo = None
 
 def SetRepo(URepo:USMRepo):
