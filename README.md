@@ -1,6 +1,6 @@
 # Ultimate Sale Man Bot
 
-This is a side project of mine trying to restrict myself to raw SQL queries and avoiding ORMs
+This was a side project of mine trying to restrict myself to raw SQL queries and avoiding ORMs
 
 bot itself has a very nice and well defined structure giving it ability to expand to any project need (before that you may need to setup a proper ORM to avoid injections 😀)
 
